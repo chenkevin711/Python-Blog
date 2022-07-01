@@ -7,7 +7,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import json
 
 app = Flask(__name__)
-app.jinja_env.add_extension('jinja2.ext.loopcontrols')
 app.url_map.strict_slashes = False
 
 app.config['SECRET_KEY'] = "b'\x00\xb4\x8d\xbe\xf8\xa3\x1e;l\xf4,\x12'"
@@ -28,6 +27,7 @@ class Posts(db.Model, UserMixin):
     fileData = db.Column(db.LargeBinary)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
+# init user database
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(150), unique=True)
@@ -55,7 +55,7 @@ def index():
 
     return render_template('index.html', posts=allPosts)
 
-
+# database page, view and manage a specific user's posts
 @app.route("/database")
 @login_required
 def database():
@@ -111,7 +111,7 @@ def createPost():
 
     return render_template('createPost.html', user=current_user)
 
-
+# manage logins
 login_manager = LoginManager()
 login_manager.login_view = 'login'
 login_manager.init_app(app)
@@ -120,6 +120,7 @@ login_manager.init_app(app)
 def load_user(id):
     return User.query.get(int(id))
 
+# login function
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -139,12 +140,14 @@ def login():
 
     return render_template("login.html", user=current_user)
 
+# logout function
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('login'))
 
+# sign up function
 @app.route('/sign-up', methods=['GET', 'POST'])
 def sign_up():
     if request.method == 'POST':
@@ -174,6 +177,7 @@ def sign_up():
 
     return render_template("sign_up.html", user=current_user)
 
+# deleting a post
 @app.route("/<int:post_id>/delete_post", methods=['GET','POST'])
 def delete_post(post_id):
     postID = Posts.query.filter_by(id=post_id).first()
