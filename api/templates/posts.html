@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+    <h1>{{ post['title'] }}</h1>
+    <span class="text-muted">Posted: {{ post['timeCreated'] }}</span>
+    <br><br>
+    <p class="fs-6 text-muted">File: {{ post['fileName'] }}</p>
+    <a style="float:left" href="{{ url_for('display', post_id=post['id']) }}">
+            <button type="button" class="btn btn-outline-primary">View File</button></a>
+
+    <a style="float:left" href="{{ url_for('download', post_id=post['id']) }}">
+            <button type="button" class="btn btn-outline-primary">Download File</button></a>
+
+    <br><br>
+    <p class="fs-6">{{ post['content'] }}</p>
+
+{% endblock body %}
